@@ -1,0 +1,19 @@
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Editor/IDE files
+*.swp
+*.swo
+*.bak
+*.tmp
+.vscode/
+.idea/
+*.code-workspace
+
+# Log files
+*.log
+
+# Shell history or command outputs
+*.sh~
+
