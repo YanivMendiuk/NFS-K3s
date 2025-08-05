@@ -1,0 +1,36 @@
+# nginx-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-nfs-app
+  namespace: default # Match your PVC's namespace
+  labels:
+    app: nginx-nfs
+spec:
+  replicas: 3 # Three replicas as requested
+  selector:
+    matchLabels:
+      app: nginx-nfs
+  template:
+    metadata:
+      labels:
+        app: nginx-nfs
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:latest # Using latest Nginx image
+          ports:
+             - containerPort: 1234 # Expose port 1234 from the container
+          volumeMounts:
+            - name: nginx-config-volume # Mount ConfigMap for custom config
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf # Mount only the nginx.conf file
+            - name: nfs-storage-volume # Mount the PVC
+              mountPath: /usr/share/nginx/html # Mount the NFS share here
+      volumes:
+        - name: nginx-config-volume
+          configMap:
+            name: nginx-custom-config # Reference the ConfigMap
+        - name: nfs-storage-volume
+          persistentVolumeClaim:
+            claimName: nginx-nfs-pvc # Reference the PVC

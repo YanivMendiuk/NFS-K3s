@@ -1,0 +1,14 @@
+# nfs-pvc.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nginx-nfs-pvc # A unique name for your PVC
+  namespace: default # Ensure this matches the namespace where Nginx will be deployed
+spec:
+  accessModes:
+     - ReadWriteMany # Must match the PV's accessModes
+  resources:
+    requests:
+      storage: 2Gi # Request a portion of the PV's storage (must be <= PV capacity)
+  volumeName: k3s-nfs-pv # Explicitly bind to the PV created above
+  storageClassName: "" # <--- you need to tell the PVC that it should not look for a StorageClass

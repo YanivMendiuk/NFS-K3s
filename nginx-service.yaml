@@ -1,0 +1,15 @@
+# nginx-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-nfs-service
+  namespace: default # Match your deployment's namespace
+spec:
+  selector:
+    app: nginx-nfs
+  ports:
+    - protocol: TCP
+      port: 1234 # Service port
+      targetPort: 1234 # Container port
+      nodePort: 30080 # A high port accessible from outside the cluster (adjust if 30080 is in use)
+  type: NodePort # Expose via NodePort

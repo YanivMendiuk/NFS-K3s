@@ -1,0 +1,16 @@
+# nfs-pv.yaml
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: k3s-nfs-pv # A unique name for your PV
+  labels:
+    type: nfs-storage # A label to easily identify this PV
+spec:
+  capacity:
+    storage: 5Gi # Define the size of the volume (adjust as needed)
+  accessModes:
+     - ReadWriteMany # Allows the volume to be mounted as read-write by many nodes
+  persistentVolumeReclaimPolicy: Retain # Retain the volume after PVC is deleted
+  nfs:
+    path: /srv/nfs/k3s # <<< UPDATED: Use your existing shared path
+    server: 10.40.1.67 # <<< REPLACE WITH YOUR NFS SERVER'S IP ADDRESS (YOUR RHEL MACHINE'S IP)
