@@ -1,80 +1,103 @@
-K3s NFS Application Deployment
-This project provides a simple, automated solution for setting up an NFS server and deploying an Nginx application on a K3s (Lightweight Kubernetes) cluster that utilizes the NFS share for its persistent storage.
+# 📦 K3s NFS Application Deployment
 
-Project Structure
-The project is organized as follows:
+This project provides a simple, automated solution for setting up an NFS server and deploying an Nginx application on a **K3s (Lightweight Kubernetes)** cluster that utilizes the NFS share for its persistent storage.
+
+---
+
+## 📁 Project Structure
 
 .
 ├── deploy-nfs.sh
 ├── manifests
-│   ├── nfs-pvc.yaml
-│   ├── nfs-pv.yaml
-│   ├── nginx-configmap.yaml
-│   ├── nginx-deployment.yaml
-│   └── nginx-service.yaml
+│ ├── nfs-pvc.yaml
+│ ├── nfs-pv.yaml
+│ ├── nginx-configmap.yaml
+│ ├── nginx-deployment.yaml
+│ └── nginx-service.yaml
 └── README.md
-Features
-Automated NFS Setup: Installs the necessary NFS utilities and configures an NFS export on the local machine.
 
-K3s Resource Deployment: Deploys Kubernetes Persistent Volume (PV), Persistent Volume Claim (PVC), Nginx ConfigMap, Deployment, and Service.
 
-Nginx with NFS Storage: The Nginx application is configured to serve content from the provisioned NFS share.
+---
 
-Basic Connectivity Check: After deployment, the script attempts to curl the Nginx pod to verify access to the NFS-mounted content.
+## ✨ Features
 
-Non-Root Execution: Ensures the script is not run as a root user, promoting secure practices.
+- **Automated NFS Setup**  
+  Installs required NFS utilities and configures an export on the host machine.
 
-Prerequisites
-Before running this script, ensure you have:
+- **K3s Resource Deployment**  
+  Deploys PV, PVC, ConfigMap, Deployment, and Service resources to the Kubernetes cluster.
 
-K3s Cluster: A running K3s cluster on the machine where you intend to run this script.
+- **Nginx with NFS Storage**  
+  Nginx serves content directly from the provisioned NFS share.
 
-kubectl: Configured to interact with your K3s cluster.
+- **Connectivity Check**  
+  Performs a `curl` test to verify that Nginx is serving content from the NFS volume.
 
-sudo: The user running the script must have sudo privileges.
+- **Non-Root Execution**  
+  Script checks and enforces that it is not run as root for better security.
 
-DNF-based Linux Distribution: The script currently uses dnf for package management, so it's designed for distributions like Fedora, CentOS, or RHEL.
+---
 
-Usage
-Clone the Repository:
+## ⚙️ Prerequisites
 
-Bash
+Before running the script, make sure you have the following:
 
+- ✅ A running **K3s cluster**
+- ✅ `kubectl` configured to access the cluster
+- ✅ `sudo` privileges on the host machine
+- ✅ A **DNF-based Linux distribution** (e.g., RHEL, CentOS, Fedora)
+
+---
+
+## 🚀 Usage
+
+### 1. Clone the Repository
+
+```bash
 git clone <your-repo-url>
-cd nfs_task # Or whatever your project directory is named
-Run the Deployment Script:
-Execute the deploy-nfs.sh script. It will handle the NFS server setup and Kubernetes resource deployment.
+cd nfs_task  # Adjust if your folder is named differently
+```
 
-Bash
+### 2. Run the Deployment Script
 
+```bash
 ./deploy-nfs.sh
-The script will:
+```
 
-Check if it's being run as a non-root user.
+### This script will:
 
-Detect your operating system.
+- Verify it's not being run as root
 
-Install nfs-utils and enable nfs-server and rpcbind services.
+- Detect your operating system
 
-Create the NFS shared directory /srv/nfs/k3s and export it.
+- Install NFS utilities
 
-Apply all Kubernetes manifests from the manifests/ directory.
+- Start NFS services (nfs-server, rpcbind)
 
-Attempt to access the Nginx pod's web page to confirm NFS access.
+- Create and export the /srv/nfs/k3s shared directory
 
-Manifests Explained
-nfs-pv.yaml: Defines a Kubernetes Persistent Volume (PV) that represents the NFS share /srv/nfs/k3s on your host machine.
+- Apply Kubernetes manifests from the manifests/ directory
 
-nfs-pvc.yaml: Defines a Persistent Volume Claim (PVC) that requests storage from the nfs-pv. This is what your Nginx application will use.
+- Use curl to verify Nginx is correctly serving content
 
-nginx-configmap.yaml: Creates a ConfigMap for Nginx, which can be used to store configuration files or other data for the Nginx server.
+### 📜 Manifests Explained
 
-nginx-deployment.yaml: Defines the Nginx deployment, creating replica pods that mount the PVC and serve content.
+- nfs-pv.yaml
+Defines a Persistent Volume backed by the local NFS export.
 
-nginx-service.yaml: Creates a Kubernetes Service to expose the Nginx pods, making them accessible within the cluster.
+- nfs-pvc.yaml
+Creates a Persistent Volume Claim to request storage from the PV.
 
-Author
-Yaniv Mendiuk
+- nginx-configmap.yaml
+Custom Nginx configuration, including setting the server to listen on port 1234.
 
-Version
-1.1.0
+- nginx-deployment.yaml
+Deploys Nginx pods with the NFS volume mounted at /usr/share/nginx/html.
+
+- nginx-service.yaml
+Exposes the Nginx deployment using a NodePort service.
+
+---
+
+## 👤 Author
+**Yaniv Mendiuk**
