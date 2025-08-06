@@ -34,6 +34,7 @@ sudo systemctl enable --now nfs-server rpcbind
 mkdir -p $NFS_PATH
 echo "NFS StorageClass To Container" | sudo tee $NFS_PATH/index.html
 echo "$NFS_PATH *(rw,sync,no_subtree_check,no_root_squash)" | sudo tee -a /etc/exports
+sudo systemctl restart nfs-server
 }
 
 function check_nfs_export() {
