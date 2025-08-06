@@ -27,10 +27,6 @@ function check_no_root() {
     fi
 }
 
-# Checking which OS
-whichOS=$(cat /etc/os-release | grep "ID_LIKE=" | sed 's/ID_LIKE=//')
-echo "Detected OS: $whichOS"
-
 # Install NFS Kernel and Setup of NFS Server
 install_setup_nfs() { 
 sudo dnf update && sudo dnf install nfs-utils -y
