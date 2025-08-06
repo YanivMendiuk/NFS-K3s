@@ -29,7 +29,7 @@ function check_no_root() {
 
 # Install NFS Kernel and Setup of NFS Server
 install_setup_nfs() { 
-sudo dnf update && sudo dnf install nfs-utils -y
+sudo dnf update -y && sudo dnf install nfs-utils -y
 sudo systemctl enable --now nfs-server rpcbind
 mkdir -p $NFS_PATH
 echo "NFS StorageClass To Container" | sudo tee $NFS_PATH/index.html
