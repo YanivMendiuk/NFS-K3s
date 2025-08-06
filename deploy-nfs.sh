@@ -33,7 +33,7 @@ echo "Detected OS: $whichOS"
 
 # Install NFS Kernel and Setup of NFS Server
 install_setup_nfs() { 
-sudo dnf update && sudo dnf install nfs-utils
+sudo dnf update && sudo dnf install nfs-utils -y
 sudo systemctl enable --now nfs-server rpcbind
 mkdir -p $NFS_PATH
 echo "NFS StorageClass To Container" | sudo tee $NFS_PATH/index.html
@@ -49,5 +49,39 @@ function check_nfs_export() {
         return 1
     fi	
 }
+
+function deploy_k3s_resources {
+
+kubectl apply -f manifests/nfs-pv.yaml
+kubectl apply -f manifests/nfs-pvc.yaml
+kubectl apply -f manifests/nginx-configmap.yaml
+kubectl apply -f manifests/nginx-deployment.yaml
+kubectl apply -f manifests/nginx-service.yaml
+}
+
+function check_pod_access_nfs {
+	POD_IP=$(kubectl get pods -o jsonpath='{.items[0].status.podIP}')
+	curl http://$POD_IP:1234
+}
+
+function main() {
+    # Check that the script is not run as root.
+    check_no_root
+
+    # Run the installation and setup steps.
+    install_setup_nfs
+
+    # Verify that the NFS export was successful.
+    check_nfs_export
+
+    # Apply K3s resources.
+    deploy_k3s_resources
+
+    # After Deploying resources checking pod access to index.html at NFS. 
+    check_pod_access_nfs
+}
+
+# Call the main function
+main "$@"
 
 
